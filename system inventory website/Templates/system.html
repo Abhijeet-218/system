@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Information</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            padding-top: 10px; /* Reduce top padding for the heading */
+            margin-bottom: 10px; /* Reduce bottom margin for the heading */
+        }
+
+        .container {
+            width: 100%;
+            margin: -5px;
+            padding: 10px; /* Reduce container padding */
+        }
+
+        /* Buttons container to align Dashboard and Logout buttons */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        /* Search Bar */
+        #searchInput {
+            padding: 8px;
+            width: 100%;
+            max-width: 300px;
+            margin: 5px 0; /* Reduced top and bottom margin */
+            border-radius: 5px;
+            border: 1px solid #BDC3C7;
+        }
+
+        #searchInput:focus {
+            outline: none;
+        }
+
+        .btn {
+            padding: 6px 12px; /* Adjust button padding for a compact design */
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+            font-size: 14px;
+            display: inline-block; /* Ensure buttons appear correctly */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px; /* Reduce space above the table */
+        }
+
+        th, td {
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #BDC3C7;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        td {
+            background-color: #ffffff;
+        }
+
+        .nowrap {
+            white-space: nowrap;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-system-btn {
+            margin: 10px 0; /* Reduce space above and below the Add New System button */
+            text-align: center;
+        }
+
+        .export-btns {
+            text-align: center;
+            margin-top: 10px; /* Reduce space above the export buttons */
+        }
+
+        .export-btn {
+            padding: 6px 12px; /* Adjust button padding */
+            font-size: 14px;
+            margin: 5px;
+        }
+
+        a {
+            color: green; 
+            text-decoration: none; 
+            border: 2px solid green; 
+            padding: 3px 6px; 
+            border-radius: 5px; 
+            display: inline-block; 
+        }
+
+        a:hover {
+            background-color: #00ff40; /* Light green background on hover */
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="button-container">
+            <a href="/dashboard" class="btn">Dashboard</a>
+
+            <!-- Display Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+            <!-- Logout Button on the right -->
+            <a href="/logout" class="btn">Logout</a>
+        </div>
+
+        <h1>System Information</h1>
+        
+        <!-- Search Input -->
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search for systems...">
+
+        <!-- Add New System button centered -->
+        <div class="add-system-btn">
+            <a href="/add_system" class="btn">Add New System</a>
+        </div>
+
+        <!-- Export Buttons -->
+        <div class="export-btns">
+            <button class="export-btn" id="exportCsv">Export to CSV</button>
+            <button class="export-btn" id="exportExcel">Export to Excel</button>
+        </div>
+
+        <div class="table-responsive" class="btn">
+            <table id="systemTable" >
+                <thead>
+                    <tr>
+                        <th class="nowrap">System No</th>
+                        <th class="nowrap">Floor</th>
+                        <th class="nowrap">Department</th>
+                        <th class="nowrap">Host Name</th>
+                        <th class="nowrap">Employee Name</th>
+                        <th class="nowrap">IP Address</th>
+                        <th class="nowrap">Antivirus</th>
+                        <th class="nowrap">Operating System</th>
+                        <th class="nowrap">Product Model</th>
+                        <th class="nowrap">PC Type</th>
+                        <th class="nowrap">Processor</th>
+                        <th class="nowrap">RAM Size</th>
+                        <th class="nowrap">Hard Disk Type</th>
+                        <th class="nowrap">Hard Disk Size</th>
+                        <th class="nowrap">Hard Disk SN</th>
+                        <th class="nowrap">SSD Disk Type</th>
+                        <th class="nowrap">SSD Disk Size</th>
+                        <th class="nowrap">SSD Hard Disk SN</th>
+                        <th class="nowrap">Onboard LAN Card</th>
+                        <th class="nowrap">Adapter MAC Address</th>
+                        <th class="nowrap">External LAN Card</th>
+                        <th class="nowrap">External MAC Address</th>
+                        <th class="nowrap">MS Office</th>
+                        <th class="nowrap">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in inventories %}
+                    <tr>
+                        <td class="nowrap">{{ loop.index }}</td>
+                        <td class="nowrap">{{ item.floor }}</td>
+                        <td class="nowrap">{{ item.department }}</td>
+                        <td class="nowrap">{{ item.host_name }}</td>
+                        <td class="nowrap">{{ item.employee_name }}</td>
+                        <td class="nowrap">{{ item.ip_address }}</td>
+                        <td class="nowrap">{{ item.antivirus }}</td>
+                        <td class="nowrap">{{ item.operating_system }}</td>
+                        <td class="nowrap">{{ item.product_model }}</td>
+                        <td class="nowrap">{{ item.pc_type }}</td>
+                        <td class="nowrap">{{ item.processor }}</td>
+                        <td class="nowrap">{{ item.ram_size }}</td>
+                        <td class="nowrap">{{ item.hard_disk_type }}</td>
+                        <td class="nowrap">{{ item.hard_disk_size }}</td>
+                        <td class="nowrap">{{ item.hard_disk_sn }}</td>
+                        <td class="nowrap">{{ item.ssd_disk_type }}</td>
+                        <td class="nowrap">{{ item.ssd_disk_size }}</td>
+                        <td class="nowrap">{{ item.ssd_hard_disk_sn }}</td>
+                        <td class="nowrap">{{ item.on_board_lan_card }}</td>
+                        <td class="nowrap">{{ item.adapter_mac_address }}</td>
+                        <td class="nowrap">{{ item.external_lan_card }}</td>
+                        <td class="nowrap">{{ item.external_adapter_mac_address }}</td>
+                        <td class="nowrap">{{ item.ms_office }}</td>
+                        <td class="nowrap">
+                            <div class="action-buttons">
+                                <form action="/delete_system/{{ item.id }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this system?');">
+                                    <button type="submit">Delete</button>
+                                </form>
+                                <a href="/update_system/{{ item.id }}">Update</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Include SheetJS library for Excel export -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+
+        <script>
+            function searchTable() {
+                var input = document.getElementById('searchInput').value.toLowerCase();
+                var table = document.getElementById('systemTable');
+                var tr = table.getElementsByTagName('tr');
+
+                for (var i = 1; i < tr.length; i++) {
+                    var td = tr[i].getElementsByTagName('td');
+                    var rowMatch = false;
+                    
+                    for (var j = 0; j < td.length; j++) {
+                        if (td[j]) {
+                            var cellValue = td[j].textContent || td[j].innerText;
+                            if (cellValue.toLowerCase().indexOf(input) > -1) {
+                                rowMatch = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (rowMatch) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+
+            // Export to CSV
+            document.getElementById("exportCsv").addEventListener("click", function() {
+                var table = document.getElementById('systemTable');
+                var rows = table.querySelectorAll('tr');
+                var csv = [];
+                rows.forEach(function(row) {
+                    var cols = row.querySelectorAll('td, th');
+                    var rowData = [];
+                    cols.forEach(function(col, index) {
+                        // Exclude the last column (Actions)
+                        if (index !== cols.length - 1) {
+                            rowData.push('"' + col.textContent.trim() + '"');
+                        }
+                    });
+                    csv.push(rowData.join(','));
+                });
+                var csvContent = csv.join('\n');
+                var downloadLink = document.createElement("a");
+                downloadLink.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csvContent);
+                downloadLink.target = "_blank";
+                downloadLink.download = "system_information.csv";
+                downloadLink.click();
+            });
+
+            document.getElementById('exportExcel').addEventListener('click', function() {
+                var table = document.getElementById('systemTable');
+                var rows = table.querySelectorAll('tr');
+                var data = [];
+                
+                rows.forEach(function(row, index) {
+                    var cells = row.querySelectorAll('td, th');
+                    var rowData = [];
+                    cells.forEach(function(cell, cellIndex) {
+                        // Skip the last column (Actions)
+                        if (cellIndex !== cells.length - 1) {
+                            rowData.push(cell.innerText);
+                        }
+                    });
+                    if (rowData.length > 0) {
+                        data.push(rowData);
+                    }
+                });
+
+                // Create a worksheet
+                var ws = XLSX.utils.aoa_to_sheet(data);
+                // Create a workbook
+                var wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "system Data");
+
+                // Export to Excel
+                XLSX.writeFile(wb, "system_information.xlsx");
+            });
+             // Automatically hide flash messages after 2 seconds
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const flashMessages = document.querySelectorAll('.alert');
+            flashMessages.forEach(message => {
+                setTimeout(() => {
+                    message.style.opacity = 0;  // Fade the message out
+                }, 2000); // Wait for 2 seconds
+            });
+        });
+        </script>
+    </body>
+</html>

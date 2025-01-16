@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - IT Admin </title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(45deg, rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://www.shutterstock.com/search/technology-background?searchterm=technology%20background&sort=best#searchterm=technology%20background&page=1') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            overflow: hidden;
+        }
+
+        .login-container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+        }
+
+        .greeting {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-container label {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            display: block;
+            text-align: left;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.5rem 0 1rem 0;
+            border: 1px solid #4d6b8b;
+            border-radius: 5px;
+            background: transparent;
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .login-container .password-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .login-container .password-container i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4d6b8b;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            background: #4d6b8b;
+            color: white;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .login-container button:hover {
+            background: #3b4f65;
+        }
+
+        .login-container button:active {
+            background: #2a3748;
+        }
+
+        .login-container .form-group {
+            margin-bottom: 1rem;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-container {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Animation for background graphics */
+        .background-animation {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.shutterstock.com/search/technology-background?searchterm=technology%20background&sort=best#searchterm=technology%20background&page=1') repeat;
+            z-index: -1;
+            filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+    <div class="login-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+        <div id="greeting" class="greeting"></div>
+        <h1>IT Admin </h1>
+        <form method="POST" action="/login">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username" required>
+            </div>
+            <div class="form-group password-container">
+                <label for="password">Password:</label>
+                <input type="password" name="password" id="password" required>
+                <i class="fas fa-eye" id="togglePassword"></i>
+            </div>
+            <button type="submit">Login</button>
+            
+        </form>
+    </div>
+
+    <script>
+        // Get current hour
+        const currentHour = new Date().getHours();
+
+        // Define greeting message based on time
+        let greetingMessage;
+        if (currentHour >= 5 && currentHour < 12) {
+            greetingMessage = "Good Morning";
+        } else if (currentHour >= 12 && currentHour < 18) {
+            greetingMessage = "Good Afternoon";
+        } else if (currentHour >= 18 && currentHour < 22) {
+            greetingMessage = "Good Evening";
+        } else {
+            greetingMessage = "Good Night";
+        }
+
+        // Set the greeting message to the h1 tag
+        document.getElementById('greeting').innerText = `${greetingMessage}`;
+
+        // Eye icon functionality for password visibility
+        const togglePassword = document.getElementById("togglePassword");
+        const passwordField = document.getElementById("password");
+
+        togglePassword.addEventListener("click", function () {
+            const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+            passwordField.setAttribute("type", type);
+            this.classList.toggle("fa-eye-slash");
+        });
+    </script>
+</body>
+</html>

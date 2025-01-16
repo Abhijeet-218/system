@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outlook Data</title>
+    <style>
+        /* General reset */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+        }
+
+        /* Container to ensure proper height */
+        .container {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header style */
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: -10px;
+        }
+
+        /* Flex container for Dashboard and Logout */
+        .header-buttons {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            align-items: center;
+        }
+
+        /* Button style */
+        .btn {
+            background-color: #5cb85c;
+            color: white;
+            padding: 5px 15px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background-color: #4cae4c;
+        }
+
+        .btn-danger {
+            background-color: #d9534f;
+        }
+
+        .btn-danger:hover {
+            background-color: #c9302c;
+        }
+
+        /* Table style */
+        table {
+            width: 100%;
+            margin: 10px 10px;
+            border-collapse: collapse;
+            background-color: #ffffff;
+        }
+
+        th, td {
+            padding: 6px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        tr:hover {
+            background-color: #78d44d;
+        }
+
+        /* For better scrolling of tables */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        ul {
+            padding: 0;
+            list-style: none;
+            margin: 0;
+        }
+
+        .company-name {
+            color: #555;
+        }
+
+        .nowrap {
+            white-space: nowrap;
+        }
+
+        /* Green styling for the Actions column */
+        td.actions {
+            color: green;
+            font-weight: bold;
+        }
+        th.actions {
+            color: green;
+        }
+
+        #searchInput {
+            padding: 8px;
+            width: 100%;
+            max-width: 300px;
+            margin: 5px 0; /* Reduced top and bottom margin */
+            border-radius: 5px;
+            border: 1px solid #BDC3C7;
+        }
+
+        #searchInput:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header buttons container -->
+        <div class="header-buttons">
+            <a href="/dashboard" class="btn">Dashboard</a>
+             <!-- Display Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+            <a href="/logout" class="btn btn-danger">Logout</a>
+        </div>
+
+        <h1>Outlook Data</h1>
+
+        <!-- Search Input -->
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search for outlook...">
+
+        <!-- Add Outlook button centered -->
+        <div style="text-align: center; margin-bottom: 20px;">
+            <a href="{{ url_for('add_outlook') }}" class="btn">Add Outlook</a>
+        </div>
+
+        <!-- Export buttons in one row -->
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button id="exportCsv" class="btn">Export to CSV</button>
+            <button id="exportExcel" class="btn">Export to Excel</button>
+        </div>
+        
+        <div class="table-responsive">
+            <table id="outlookTable">
+                <thead>
+                    <tr>
+                        <th class="nowrap">Floor</th>
+                        <th class="nowrap">Department</th>
+                        <th class="nowrap">Host Name</th>
+                        <th class="nowrap">Employee Name</th>
+                        <th class="nowrap">IP Address</th>
+                        <th class="nowrap">Emails</th>
+                        <th class="nowrap">Email Type</th>
+                        <th class="nowrap">Company Name</th>
+                        <th class="nowrap actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for outlook in outlook_data %}
+                    <tr>
+                        <td class="nowrap">{{ outlook.floor }}</td>
+                        <td class="nowrap">{{ outlook.department }}</td>
+                        <td class="nowrap">{{ outlook.host_name }}</td>
+                        <td class="nowrap">{{ outlook.employee_name }}</td>
+                        <td class="nowrap">{{ outlook.ip_address }}</td>
+                        <td class="nowrap">
+                            <ul>
+                                {% for email in outlook.emails %}
+                                <li>{{ email.email_id }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td class="nowrap">
+                            <ul>
+                                {% for email in outlook.emails %}
+                                <li>{{ email.email_type }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td class="nowrap">
+                            <ul>
+                                {% for email in outlook.emails %}
+                                <li><span class="company-name">{{ email.company_name }}</span></li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td class="nowrap actions">
+                            <a href="{{ url_for('update_outlook', id=outlook.id) }}" class="btn btn-warning btn-sm">Edit</a>
+                            <form action="{{ url_for('delete_outlook', id=outlook.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- JavaScript for search, CSV, and Excel export -->
+    <script>
+        // Function to search table rows
+        function searchTable() {
+            var input = document.getElementById('searchInput').value.toLowerCase();
+            var table = document.getElementById('outlookTable');
+            var tr = table.getElementsByTagName('tr');
+
+            for (var i = 1; i < tr.length; i++) {
+                var td = tr[i].getElementsByTagName('td');
+                var rowMatch = false;
+
+                for (var j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        var cellValue = td[j].textContent || td[j].innerText;
+                        if (cellValue.toLowerCase().indexOf(input) > -1) {
+                            rowMatch = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (rowMatch) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+
+        // Export to CSV
+        document.getElementById('exportCsv').addEventListener('click', function() {
+            var table = document.getElementById('outlookTable');
+            var rows = table.querySelectorAll('tr');
+            var csvContent = "";
+            
+            rows.forEach(function(row, index) {
+                var cells = row.querySelectorAll('td, th');
+                var rowData = [];
+                cells.forEach(function(cell, cellIndex) {
+                    // Skip the last column (Actions)
+                    if (cellIndex !== cells.length - 1) {
+                        rowData.push(cell.innerText.replace(/,/g, ''));  // Remove commas
+                    }
+                });
+                if (rowData.length > 0) {
+                    csvContent += rowData.join(',') + "\n";
+                }
+            });
+
+            var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            var link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "outlook_data.csv";
+            link.click();
+        });
+
+        // Export to Excel using SheetJS
+        document.getElementById('exportExcel').addEventListener('click', function() {
+            var table = document.getElementById('outlookTable');
+            var rows = table.querySelectorAll('tr');
+            var data = [];
+            
+            rows.forEach(function(row, index) {
+                var cells = row.querySelectorAll('td, th');
+                var rowData = [];
+                cells.forEach(function(cell, cellIndex) {
+                    // Skip the last column (Actions)
+                    if (cellIndex !== cells.length - 1) {
+                        rowData.push(cell.innerText);
+                    }
+                });
+                if (rowData.length > 0) {
+                    data.push(rowData);
+                }
+            });
+            
+            // Create a worksheet
+            var ws = XLSX.utils.aoa_to_sheet(data);
+            // Create a workbook
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Outlook Data");
+
+            // Export to Excel
+            XLSX.writeFile(wb, "outlook_data.xlsx");
+        });
+        // Automatically hide flash messages after 2 seconds
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const flashMessages = document.querySelectorAll('.alert');
+            flashMessages.forEach(message => {
+                setTimeout(() => {
+                    message.style.opacity = 0;  // Fade the message out
+                }, 2000); // Wait for 2 seconds
+            });
+        });
+    </script>
+
+    <!-- Include SheetJS for Excel export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+</body>
+</html>

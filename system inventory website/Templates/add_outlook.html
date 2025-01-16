@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Outlook Entry</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Add Outlook Entry</h1>
+        <form action="{{ url_for('add_outlook') }}" method="POST">
+            <div class="form-group">
+                <label for="floor">Floor</label>
+                <input type="text" class="form-control" name="floor" required>
+            </div>
+            <div class="form-group">
+                <label for="department">Department</label>
+                <input type="text" class="form-control" name="department" required>
+            </div>
+            <div class="form-group">
+                <label for="host_name">Host Name</label>
+                <input type="text" class="form-control" name="host_name" required>
+            </div>
+            <div class="form-group">
+                <label for="employee_name">Employee Name</label>
+                <input type="text" class="form-control" name="employee_name" required>
+            </div>
+            <div class="form-group">
+                <label for="ip_address">IP Address</label>
+                <input type="text" class="form-control" name="ip_address" required>
+            </div>
+
+            <h3>Email Details</h3>
+            <div id="email-container">
+                <div class="form-group email-entry">
+                    <label for="email_id[]">Email ID</label>
+                    <input type="email" class="form-control" name="email_id[]" required>
+                </div>
+                <div class="form-group email-entry">
+                    <label for="email_type[]">Email Type</label>
+                    <select name="email_type[]" class="form-control" required>
+                        <option value="IMAP">IMAP</option>
+                        <option value="POP3">POP3</option>
+                    </select>
+                </div>
+                <div class="form-group email-entry">
+                    <label for="company_name[]">Company Name</label>
+                    <input type="text" class="form-control" name="company_name[]" required>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-secondary" onclick="addEmailField()">Add Another Email</button>
+            <button type="submit" class="btn btn-success mt-3">Save</button>
+        </form>
+    </div>
+
+    <script>
+        function addEmailField() {
+            let container = document.getElementById("email-container");
+
+            let emailDiv = document.createElement("div");
+            emailDiv.classList.add("email-entry");
+
+            emailDiv.innerHTML = `
+                <div class="form-group">
+                    <label for="email_id[]">Email ID</label>
+                    <input type="email" class="form-control" name="email_id[]" required>
+                </div>
+                <div class="form-group">
+                    <label for="email_type[]">Email Type</label>
+                    <select name="email_type[]" class="form-control" required>
+                        <option value="IMAP">IMAP</option>
+                        <option value="POP3">POP3</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="company_name[]">Company Name</label>
+                    <input type="text" class="form-control" name="company_name[]" required>
+                </div>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeEmailField(this)">Remove</button>
+            `;
+
+            container.appendChild(emailDiv);
+        }
+
+        function removeEmailField(button) {
+            let emailDiv = button.closest('.email-entry');
+            emailDiv.remove();
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

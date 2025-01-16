@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Inventory</title>
+    <style>
+        /* Body and overall background style */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff; /* Light blue background */
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Form container */
+        .form-container {
+            background-color: #ffffff; /* White background for the form */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            max-height: 90vh;
+            overflow-y: auto; /* Allow scrolling for long forms */
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50; /* Green title */
+        }
+
+        /* Label and input field styles */
+        label {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px 0 5px;
+            display: inline-block;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus {
+            border-color: #4CAF50; /* Green focus border */
+            outline: none;
+        }
+
+        /* Submit button styles */
+        button {
+            background-color: #4CAF50; /* Green background */
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        /* Responsive layout */
+        @media (max-width: 768px) {
+            .form-container {
+                width: 80%;
+            }
+        }
+
+        /* Styling for the input fields' error messages */
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Add New Inventory</h1>
+        <form method="POST" action="/add_system">
+            <label for="floor">Floor:</label>
+            <input type="text" name="floor" id="floor" required>
+            <br>
+
+            <label for="department">Department:</label>
+            <input type="text" name="department" id="department" required>
+            <br>
+
+            <label for="host_name">Host Name:</label>
+            <input type="text" name="host_name" id="host_name" required>
+            <br>
+
+            <label for="employee_name">Employee Name:</label>
+            <input type="text" name="employee_name" id="employee_name" required>
+            <br>
+
+            <label for="ip_address">IP Address:</label>
+            <input type="text" name="ip_address" id="ip_address" required>
+            <br>
+
+            <label for="antivirus">Antivirus:</label>
+            <input type="text" name="antivirus" id="antivirus" required>
+            <br>
+
+            <label for="operating_system">Operating System:</label>
+            <input type="text" name="operating_system" id="operating_system" required>
+            <br>
+
+            <label for="product_model">Product Model:</label>
+            <input type="text" name="product_model" id="product_model" required>
+            <br>
+
+            <label for="pc_type">PC Type:</label>
+            <input type="text" name="pc_type" id="pc_type" required>
+            <br>
+
+            <label for="processor">Processor:</label>
+            <input type="text" name="processor" id="processor" required>
+            <br>
+
+            <label for="ram_size">RAM Size:</label>
+            <input type="text" name="ram_size" id="ram_size" required>
+            <br>
+
+            <label for="hard_disk_type">Hard Disk Type:</label>
+            <input type="text" name="hard_disk_type" id="hard_disk_type" required>
+            <br>
+
+            <label for="hard_disk_size">Hard Disk Size:</label>
+            <input type="text" name="hard_disk_size" id="hard_disk_size" required>
+            <br>
+
+            <label for="hard_disk_sn">Hard Disk S/N:</label>
+            <input type="text" name="hard_disk_sn" id="hard_disk_sn" required>
+            <br>
+
+            <label for="ssd_disk_type">SSD Disk Type:</label>
+            <input type="text" name="ssd_disk_type" id="ssd_disk_type" required>
+            <br>
+
+            <label for="ssd_disk_size">SSD Disk Size:</label>
+            <input type="text" name="ssd_disk_size" id="ssd_disk_size" required>
+            <br>
+
+            <label for="ssd_hard_disk_sn">SSD Hard Disk S/N:</label>
+            <input type="text" name="ssd_hard_disk_sn" id="ssd_hard_disk_sn" required>
+            <br>
+
+            <label for="on_board_lan_card">On-Board LAN Card:</label>
+            <input type="text" name="on_board_lan_card" id="on_board_lan_card" required>
+            <br>
+
+            <label for="adapter_mac_address">Adapter MAC Address:</label>
+            <input type="text" name="adapter_mac_address" id="adapter_mac_address" required>
+            <br>
+
+            <label for="external_lan_card">External LAN Card:</label>
+            <input type="text" name="external_lan_card" id="external_lan_card" required>
+            <br>
+
+            <label for="external_adapter_mac_address">External Adapter MAC Address:</label>
+            <input type="text" name="external_adapter_mac_address" id="external_adapter_mac_address" required>
+            <br>
+
+            <label for="ms_office">MS Office:</label>
+            <input type="text" name="ms_office" id="ms_office" required>
+            <br>
+
+            <button type="submit">Add</button>
+        </form>
+    </div>
+</body>
+</html>
